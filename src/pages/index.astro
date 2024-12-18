@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { fetchPosts } from '../lib/wordpress';
+
+const posts = await fetchPosts();
+---
+
+<Layout>
+  <title>Astro + WordPress</title>
+  <h1>Welcome to Astro + WordPress</h1>
+  <ul>
+    {posts.map((post) => (
+      <li class="my-2">
+        <h2 class="text-lg">
+          <a href={`/post/${post.slug}`} class="hover:opacity-25">{post.title.rendered}</a>
+        </h2>
+		<div class="text-sm text-gray-500 hidden">
+        	<Fragment set:html={post.content.rendered} />
+		</div>
+      </li>
+    ))}
+  </ul>
+</Layout>

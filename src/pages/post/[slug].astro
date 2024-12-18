@@ -1,0 +1,29 @@
+---
+import { fetchPosts, fetchPostBySlug } from '../../lib/wordpress';
+
+export async function getStaticPaths() {
+  const posts = await fetchPosts();
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const post = await fetchPostBySlug(slug);
+
+if (!post) {
+  throw new Error(`Post not found for slug: ${slug}`);
+}
+
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout>
+  <article class="mb-4">
+    <h1 class="text-lg">{post.title.rendered}</h1>
+    <div class="text-xs">
+      <Fragment set:html={post.content.rendered} />
+    </div>
+  </article>
+  <a href="/" class="hover:opacity-50">Back to Home</a>
+</Layout>
